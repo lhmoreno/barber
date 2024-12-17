@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:14-alpine
+    container_name: barber_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: barber
+      POSTGRES_DB: dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db:/var/lib/postgresql/data

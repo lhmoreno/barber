@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model BarberShop {
+  id   String @id @default(cuid())
+  name String
+  bio  String
+
+  @@map("barber_shop")
+}
+
+model Service {
+  id            String @id @default(cuid())
+  name          String
+  timeInMinutes Int
+
+  schedulings Scheduling[]
+
+  @@map("services")
+}
+
+model Scheduling {
+  id        String           @id @default(cuid())
+  startDate DateTime
+  endDate   DateTime
+  status    SchedulingStatus
+
+  customerName  String
+  customerPhone String
+
+  service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  serviceId String
+
+  @@map("schedulings")
+}
+
+enum SchedulingStatus {
+  CONFIRMED @map("confirmed")
+  CANCELED  @map("canceled")
+
+  @@map("scheduling_status")
+}
