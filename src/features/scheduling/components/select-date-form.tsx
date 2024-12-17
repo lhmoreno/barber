@@ -9,6 +9,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { dayjs } from "@/lib/dayjs";
 import { convertMinutesToTime } from "@/lib/helpers/minutes";
 import { cn } from "@/lib/utils";
+import { api, RouterOutputs } from "@/lib/trpc/api-react";
 
 const dateNow = new Date().toISOString();
 
@@ -17,13 +18,18 @@ export function SelectDateForm({
   unavailable,
 }: {
   serviceId: string;
-  unavailable: number[];
+  unavailable: RouterOutputs["availability"]["public"]["getUnavailableDays"];
   isAdmin?: boolean;
 }) {
   const router = useRouter();
   const pathname = usePathname();
 
   const [date, setDate] = useState(dateNow);
+
+  const { data, isPending } = api.availability.public.getHours.useQuery({
+    serviceId,
+    date,
+  });
 
   function handleSubmit(time: number) {
     const dateTime = dayjs(date)
@@ -33,10 +39,6 @@ export function SelectDateForm({
 
     router.push(pathname + "/" + dateTime);
   }
-
-  // Trash
-  const isPending = false;
-  const data = { hours: [540, 600, 660] };
 
   return (
     <div className="flex flex-1 flex-col md:flex-row">
@@ -49,7 +51,13 @@ export function SelectDateForm({
               : undefined
           }
           onSelect={(v) => v && setDate(v.toISOString())}
-          disabled={[{ before: new Date() }, { dayOfWeek: unavailable }]}
+          disabled={[
+            { before: new Date() },
+            { dayOfWeek: unavailable.days },
+            ...unavailable.dates.map((d) =>
+              dayjs(d).subtract(dayjs(d).utcOffset(), "minute").toDate()
+            ),
+          ]}
           showOutsideDays={false}
           classNames={{
             caption_label: "text-sm font-medium capitalize md:text-base",
@@ -88,14 +96,6 @@ export function SelectDateForm({
             </div>
           )}
         </ScrollArea>
-        {/* {isPendingHours && (
-            <p className="text-muted-foreground">Buscando horários...</p>
-            )} */}
-        {/* {!isPendingHours && hours.length === 0 && (
-            <p className="text-muted-foreground">
-            Sem horários disponiveis para este dia 😢
-            </p>
-            )} */}
       </div>
     </div>
   );

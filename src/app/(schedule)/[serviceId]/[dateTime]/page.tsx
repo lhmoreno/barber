@@ -3,20 +3,25 @@ import { CalendarIcon } from "lucide-react";
 import { ScheduleForm } from "@/features/scheduling/components/schedule-form";
 import { dayjs } from "@/lib/dayjs";
 import { convertMinutesToTime } from "@/lib/helpers/minutes";
+import { api } from "@/lib/trpc/api-server";
 
 export default async function ScheduleDateTime({
   params,
 }: {
   params: { serviceId: string; dateTime: string };
 }) {
+  const service = await api.service.public.get({
+    id: params.serviceId,
+  });
+
   const dateTime = decodeURIComponent(params.dateTime);
   const startTime = dayjs(dateTime).hour() * 60 + dayjs(dateTime).minute();
-  const endTime = startTime + 25;
+  const endTime = startTime + service.timeInMinutes;
 
   return (
     <div className="mx-auto flex max-w-screen-md flex-col rounded-md border bg-card md:flex-row">
       <div className="flex w-full flex-col gap-3 border-b p-4 md:max-w-64 md:border-r">
-        <h3 className="font-bold">{"Corte #"}</h3>
+        <h3 className="font-bold">{service.name}</h3>
         <div className="space-y-2">
           <CalendarIcon className="h-5 w-5 text-muted-foreground" />
           <div>
@@ -32,14 +37,7 @@ export default async function ScheduleDateTime({
           {dayjs.tz.guess()}
         </p>
       </div>
-      <ScheduleForm
-        dateTime={dateTime}
-        service={{
-          id: "1",
-          name: "Corte #",
-          timeInMinutes: 25,
-        }}
-      />
+      <ScheduleForm dateTime={dateTime} service={service} />
     </div>
   );
 }

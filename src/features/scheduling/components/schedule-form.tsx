@@ -15,10 +15,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { z } from "@/lib/zod";
 import { useRouter } from "next/navigation";
+import { api, RouterOutputs } from "@/lib/trpc/api-react";
+import { phoneNumberSchema } from "@/schemas/phone-number-schema";
 
 const infoSchema = z.object({
   name: z.string().min(3, "Menos de 3 caracteres"),
-  phone: z.string(),
+  phone: phoneNumberSchema,
   message: z.string(),
 });
 
@@ -27,30 +29,31 @@ export function ScheduleForm({
   service,
 }: {
   dateTime: string;
-  service: { id: string; name: string; timeInMinutes: number };
+  service: RouterOutputs["service"]["public"]["get"];
 }) {
   const router = useRouter();
 
-  const isPending = false;
+  const { mutate: createSchedulingFn, isPending } =
+    api.scheduling.public.create.useMutation({
+      onError: () => {
+        console.error("Não foi");
+      },
+      onSuccess: ({ id }) => {
+        router.push(`/scheduling/${id}`);
+      },
+    });
 
   const form = useForm<z.infer<typeof infoSchema>>({
     resolver: zodResolver(infoSchema),
   });
 
   function handleSubmit(data: z.infer<typeof infoSchema>) {
-    // createSchedulingFn({
-    //   organizationId,
-    //   date: dateParam,
-    //   startTimeInMinutes: convertToTMinutes(dateParam),
-    //   endTimeInMinutes: convertToTMinutes(
-    //     dayjs(dateParam).add(totalMinutes, 'minute').toDate()
-    //   ),
-    //   serviceId: serviceParams[0],
-    //   name: data.name,
-    //   whatsapp: data.whatsapp,
-    //   observations: null,
-    // })
-    router.push("/scheduling/21");
+    createSchedulingFn({
+      name: data.name,
+      phoneNumber: data.phone,
+      serviceId: service.id,
+      startDate: dateTime,
+    });
   }
 
   return (

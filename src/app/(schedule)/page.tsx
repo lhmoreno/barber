@@ -1,33 +1,15 @@
 import { Badge } from "@/components/ui/badge";
 import { showTimeDisplay } from "@/lib/helpers/show-time-display";
+import { api } from "@/lib/trpc/api-server";
 import { ArrowRightIcon, TimerIcon } from "lucide-react";
 import Link from "next/link";
 
-export default function Home() {
+export default async function Services() {
+  const { services } = await api.service.public.getAll();
+
   return (
     <div className="space-y-4">
-      {[
-        {
-          id: "1",
-          name: "Corte 1",
-          timeInMinutes: 15,
-        },
-        {
-          id: "2",
-          name: "Corte 2",
-          timeInMinutes: 25,
-        },
-        {
-          id: "3",
-          name: "Corte 3",
-          timeInMinutes: 35,
-        },
-        {
-          id: "4",
-          name: "Corte 4",
-          timeInMinutes: 45,
-        },
-      ].map((service) => (
+      {services.map((service) => (
         <Link
           href={`/${service.id}`}
           key={service.id}
@@ -37,7 +19,7 @@ export default function Home() {
             <h2 className="font-bold">{service.name}</h2>
             <Badge variant="outline">
               <TimerIcon className="mr-1 h-3 w-3" />
-              {showTimeDisplay(25)}
+              {showTimeDisplay(service.timeInMinutes)}
             </Badge>
           </div>
 

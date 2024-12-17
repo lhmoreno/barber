@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { SchedulingStatus } from "@/features/scheduling/components/scheduling-status";
 import { dayjs } from "@/lib/dayjs";
 import { convertMinutesToTime } from "@/lib/helpers/minutes";
+import { notFound } from "next/navigation";
+import { api } from "@/lib/trpc/api-server";
 
 export const metadata: Metadata = {
   title: "Agendamento realizado | AgendaChat",
@@ -21,13 +23,18 @@ export default async function Scheduling({
 }: {
   params: { schedulingId: string };
 }) {
+  const scheduling = await api.scheduling.public.get({
+    id: params.schedulingId,
+  });
+
+  if (!scheduling) {
+    notFound();
+  }
+
   return (
     <div className="p-4">
       <div className="mx-auto mt-4 w-full max-w-screen-sm rounded-lg border p-6">
         <div className="flex flex-col items-center text-center">
-          {/* <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-200">
-            <CheckIcon className="h-5 w-5 text-green-700" />
-          </div> */}
           <div className="flex h-12 w-12 items-center justify-center rounded-full bg-yellow-100">
             <ClockIcon className="h-5 w-5 text-yellow-600" />
           </div>
@@ -51,8 +58,12 @@ export default async function Scheduling({
                 {dayjs().format("D [de] MMMM [de] YYYY[,] dddd")}
               </p>
               <p className="text-muted-foreground">{`${convertMinutesToTime(
-                540
-              )} - ${convertMinutesToTime(565)}`}</p>
+                dayjs(scheduling.startDate).hour() * 60 +
+                  dayjs(scheduling.startDate).minute()
+              )} - ${convertMinutesToTime(
+                dayjs(scheduling.endDate).hour() * 60 +
+                  dayjs(scheduling.endDate).minute()
+              )}`}</p>
             </div>
           </div>
           <div className="flex justify-between gap-2">
@@ -60,7 +71,7 @@ export default async function Scheduling({
               <HardHatIcon className="h-4 w-4" />
               <p className="font-medium">Serviço</p>
             </div>
-            <p className="text-end font-medium">{"Barbearia"}</p>
+            <p className="text-end font-medium">{scheduling.service.name}</p>
           </div>
           <div className="flex justify-between gap-2">
             <div className="flex items-center gap-2 text-muted-foreground">
@@ -68,8 +79,10 @@ export default async function Scheduling({
               <p className="font-medium">Solicitante</p>
             </div>
             <div className="text-end">
-              <p className="font-medium">{"Claudio Pereira"}</p>
-              <p className="text-muted-foreground">{"xxxxxxxxx"}</p>
+              <p className="font-medium">{scheduling.customerName}</p>
+              <p className="text-muted-foreground">
+                {scheduling.customerPhone}
+              </p>
             </div>
           </div>
           <div className="flex justify-between gap-2">
@@ -78,7 +91,7 @@ export default async function Scheduling({
               <p className="font-medium">Status</p>
             </div>
 
-            <SchedulingStatus status={"confirmed"} />
+            <SchedulingStatus status={scheduling.status} />
           </div>
         </div>
 

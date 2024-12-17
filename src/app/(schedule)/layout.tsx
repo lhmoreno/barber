@@ -1,10 +1,13 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { api } from "@/lib/trpc/api-server";
 
 export default async function ScheduleLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { name, bio } = await api.barber.public.getInfo();
+
   return (
     <div className="mt-8 mx-auto w-full max-w-screen-lg space-y-8 p-4">
       <div className="flex flex-col items-center">
@@ -12,12 +15,10 @@ export default async function ScheduleLayout({
           <AvatarImage
             src={"https://pt.pngtree.com/free-png-vectors/barber-shop-logo"}
           />
-          <AvatarFallback>
-            {"Barbearia".slice(0, 2).toUpperCase()}
-          </AvatarFallback>
+          <AvatarFallback>{name.slice(0, 2).toUpperCase()}</AvatarFallback>
         </Avatar>
-        <h2 className="mt-3 text-2xl font-bold">{"Barbearia"}</h2>
-        <p className="text-muted-foreground">{"Descrição qualquer"}</p>
+        <h2 className="mt-3 text-2xl font-bold">{name}</h2>
+        <p className="text-muted-foreground">{bio}</p>
       </div>
 
       {children}
