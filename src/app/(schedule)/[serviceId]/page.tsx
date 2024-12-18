@@ -5,12 +5,20 @@ import { dayjs } from "@/lib/dayjs";
 import { showTimeDisplay } from "@/lib/helpers/show-time-display";
 import { SelectDateForm } from "@/features/scheduling/components/select-date-form";
 import { api } from "@/lib/trpc/api-server";
+import { z } from "zod";
+import { notFound } from "next/navigation";
 
 export default async function ScheduleDateTime({
   params,
 }: {
   params: { serviceId: string };
 }) {
+  const res = z.string().cuid().safeParse(params.serviceId);
+
+  if (!res.success) {
+    notFound();
+  }
+
   const service = await api.service.public.get({ id: params.serviceId });
   const unavailable = await api.availability.public.getUnavailableDays();
 

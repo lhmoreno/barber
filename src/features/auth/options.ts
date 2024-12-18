@@ -2,6 +2,7 @@ import { type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 import { env } from "@/lib/env";
+import { prisma } from "@/lib/prisma";
 
 export const options: NextAuthOptions = {
   providers: [
@@ -14,7 +15,13 @@ export const options: NextAuthOptions = {
           return null;
         }
 
-        return { id: "123" };
+        const info = await prisma.barberShop.findFirst();
+
+        if (!info) {
+          return null;
+        }
+
+        return { id: "123", name: info.name };
       },
     }),
   ],

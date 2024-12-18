@@ -6,7 +6,11 @@ import { prisma } from "../prisma";
 import { getServerSession } from "@/features/auth/helpers/get-session";
 
 export const createTRPCContext = async (opts: { headers: Headers }) => {
+  console.log("Antes de createContext");
+
   const session = await getServerSession();
+
+  console.log("Passei por createContext");
 
   return {
     prisma,
@@ -36,6 +40,8 @@ export const createTRPCRouter = t.router;
 export const publicProcedure = t.procedure;
 
 export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
+  console.log("Passei por protectedProcedure");
+
   if (!ctx.session || !ctx.session.user) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
