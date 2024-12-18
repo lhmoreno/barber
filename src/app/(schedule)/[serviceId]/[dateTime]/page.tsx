@@ -4,17 +4,32 @@ import { ScheduleForm } from "@/features/scheduling/components/schedule-form";
 import { dayjs } from "@/lib/dayjs";
 import { convertMinutesToTime } from "@/lib/helpers/minutes";
 import { api } from "@/lib/trpc/api-server";
+import { z } from "zod";
+import { notFound } from "next/navigation";
 
 export default async function ScheduleDateTime({
   params,
 }: {
   params: { serviceId: string; dateTime: string };
 }) {
+  const res1 = z.string().cuid().safeParse(params.serviceId);
+
+  if (!res1.success) {
+    notFound();
+  }
+
   const service = await api.service.public.get({
     id: params.serviceId,
   });
 
   const dateTime = decodeURIComponent(params.dateTime);
+
+  const res2 = z.string().datetime().safeParse(dateTime);
+
+  if (!res2.success) {
+    notFound();
+  }
+
   const startTime = dayjs(dateTime).hour() * 60 + dayjs(dateTime).minute();
   const endTime = startTime + service.timeInMinutes;
 

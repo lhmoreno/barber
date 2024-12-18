@@ -24,12 +24,12 @@ export function NavLinks({ className }: NavLinksProps) {
         <Button
           className={cn(
             "text-muted-foreground w-full justify-start font-medium",
-            pathname === "/admin" && "text-foreground"
+            pathname === "/admin/schedulings" && "text-foreground"
           )}
-          variant={pathname === "/admin" ? "secondary" : "ghost"}
+          variant={pathname === "/admin/schedulings" ? "secondary" : "ghost"}
           asChild
         >
-          <Link href="/admin">
+          <Link href="/admin/schedulings">
             <CalendarIcon className="h-4 w-4" /> Agendamentos
           </Link>
         </Button>

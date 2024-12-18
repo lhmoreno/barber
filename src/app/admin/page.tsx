@@ -1,9 +1,7 @@
-import { type Metadata } from "next";
+import { redirect } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "Admin | Barber",
-};
+export default function Admin() {
+  redirect("/admin/schedulings");
 
-export default async function Admin() {
-  return <div>Pagina admin</div>;
+  return null;
 }

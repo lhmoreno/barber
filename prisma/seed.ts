@@ -42,13 +42,13 @@ async function main() {
   });
 
   await prisma.scheduling.createMany({
-    data: Array.from({ length: 15 }).map(() => {
+    data: Array.from({ length: 300 }).map(() => {
       const service = faker.helpers.arrayElement(prismaServices);
 
       const startDate = dayjs(
         faker.date.between({
-          from: dayjs().subtract(2, "day").toISOString(),
-          to: dayjs().add(2, "day").toISOString(),
+          from: dayjs().subtract(15, "day").toISOString(),
+          to: dayjs().add(15, "day").toISOString(),
         })
       ).toDate();
 
