@@ -1,12 +1,16 @@
-import { initTRPC } from "@trpc/server";
+import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
 import { prisma } from "../prisma";
+import { getServerSession } from "@/features/auth/helpers/get-session";
 
 export const createTRPCContext = async (opts: { headers: Headers }) => {
+  const session = await getServerSession();
+
   return {
     prisma,
+    session,
     ...opts,
   };
 };
@@ -30,3 +34,15 @@ export const createCallerFactory = t.createCallerFactory;
 export const createTRPCRouter = t.router;
 
 export const publicProcedure = t.procedure;
+
+export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
+  if (!ctx.session || !ctx.session.user) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+
+  return next({
+    ctx: {
+      session: { ...ctx.session, user: ctx.session.user },
+    },
+  });
+});

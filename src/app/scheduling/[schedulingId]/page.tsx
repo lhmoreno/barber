@@ -15,7 +15,7 @@ import { notFound } from "next/navigation";
 import { api } from "@/lib/trpc/api-server";
 
 export const metadata: Metadata = {
-  title: "Agendamento realizado | AgendaChat",
+  title: "Agendamento realizado | Barber",
 };
 
 export default async function Scheduling({
