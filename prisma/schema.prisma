@@ -8,9 +8,10 @@ datasource db {
 }
 
 model BarberShop {
-  id   String @id @default(cuid())
-  name String
-  bio  String
+  id      String  @id @default(cuid())
+  logoUrl String?
+  name    String
+  bio     String
 
   @@map("barber_shop")
 }

@@ -37,7 +37,7 @@ export function UserButton({ short, className, arrowTop }: UserButtonProps) {
         >
           <div className="flex items-center gap-2">
             <Avatar className="h-6 w-6">
-              <AvatarImage src="https://png.pngtree.com/png-clipart/20190705/original/pngtree-black-and-white-barber-shop-logo-png-image_4359640.jpg" />
+              <AvatarImage src={user?.image ?? undefined} />
               <AvatarFallback className="text-xs">
                 {user?.name?.slice(0, 2).toUpperCase()}
               </AvatarFallback>

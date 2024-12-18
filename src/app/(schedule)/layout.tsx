@@ -6,13 +6,13 @@ export default async function ScheduleLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { name, bio } = await api.barber.public.getInfo();
+  const { name, bio, logoUrl } = await api.info.public.get();
 
   return (
     <div className="mt-8 mx-auto w-full max-w-screen-lg space-y-8 p-4">
       <div className="flex flex-col items-center">
         <Avatar className="h-24 w-24">
-          <AvatarImage src="https://png.pngtree.com/png-clipart/20190705/original/pngtree-black-and-white-barber-shop-logo-png-image_4359640.jpg" />
+          <AvatarImage src={logoUrl ?? undefined} />
           <AvatarFallback>{name.slice(0, 2).toUpperCase()}</AvatarFallback>
         </Avatar>
         <h2 className="mt-3 text-2xl font-bold">{name}</h2>
