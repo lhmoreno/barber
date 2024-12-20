@@ -5,6 +5,7 @@ import {
   HardHatIcon,
   UserIcon,
 } from 'lucide-react'
+import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
 import { Button } from '@/components/ui/button'
@@ -13,12 +14,8 @@ import { dayjs } from '@/lib/dayjs'
 import { convertMinutesToTime } from '@/lib/helpers/minutes'
 import { api } from '@/lib/trpc/api-server'
 
-export async function generateMetadata() {
-  const info = await api.info.public.get()
-
-  return {
-    title: `${info.name} | Barber`,
-  }
+export const metadata: Metadata = {
+  title: 'Seu agendamento | Barber',
 }
 
 export default async function Scheduling({
@@ -61,12 +58,8 @@ export default async function Scheduling({
                 {dayjs().format('D [de] MMMM [de] YYYY[,] dddd')}
               </p>
               <p className="text-muted-foreground">{`${convertMinutesToTime(
-                dayjs(scheduling.startDate).hour() * 60 +
-                  dayjs(scheduling.startDate).minute()
-              )} - ${convertMinutesToTime(
-                dayjs(scheduling.endDate).hour() * 60 +
-                  dayjs(scheduling.endDate).minute()
-              )}`}</p>
+                scheduling.startTimeInMinutes
+              )} - ${convertMinutesToTime(scheduling.endTimeInMinutes)}`}</p>
             </div>
           </div>
           <div className="flex justify-between gap-2">
@@ -82,9 +75,9 @@ export default async function Scheduling({
               <p className="font-medium">Solicitante</p>
             </div>
             <div className="text-end">
-              <p className="font-medium">{scheduling.customerName}</p>
+              <p className="font-medium">{scheduling.customer.name}</p>
               <p className="text-muted-foreground">
-                {scheduling.customerPhone}
+                {scheduling.customer.whatsappNumber}
               </p>
             </div>
           </div>

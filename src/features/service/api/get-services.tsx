@@ -7,6 +7,7 @@ export const getServices = protectedProcedure.query(async ({ ctx }) => {
     services: prismaServices.map((service) => ({
       id: service.id,
       name: service.name,
+      description: service.description,
       timeInMinutes: service.timeInMinutes,
     })),
   }

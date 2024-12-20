@@ -52,7 +52,7 @@ export function SchedulingsList() {
 
   const statusResult = z
     .enum(['confirmed', 'canceled', 'all'])
-    .default('all')
+    .default('confirmed')
     .safeParse(statusParam ?? undefined)
 
   const startResult = z
@@ -206,15 +206,7 @@ export function SchedulingsList() {
         {!isLoading && data && data.schedulings.length > 0 && (
           <ul className="mt-10 rounded-lg border">
             {data.schedulings.map((scheduling, index) => {
-              const isBefore =
-                new Date(dateNow) > new Date(scheduling.startDate)
-              const startTimeInMinutes =
-                dayjs(scheduling.startDate).hour() * 60 +
-                dayjs(scheduling.startDate).minute()
-
-              const endTimeInMinutes =
-                dayjs(scheduling.endDate).hour() * 60 +
-                dayjs(scheduling.endDate).minute()
+              const isBefore = new Date(dateNow) > new Date(scheduling.date)
 
               return (
                 <li
@@ -227,11 +219,11 @@ export function SchedulingsList() {
                   <div className="flex flex-1 flex-col gap-6 md:flex-row md:items-center">
                     <div className="flex items-center justify-between md:flex-col md:items-start md:justify-start">
                       <p className="text-sm font-medium">
-                        {dayjs.utc(scheduling.startDate).format('D MMMM YYYY')}
+                        {dayjs.utc(scheduling.date).format('D MMMM YYYY')}
                       </p>
                       <p className="text-sm text-muted-foreground">{`${convertMinutesToTime(
-                        startTimeInMinutes
-                      )} - ${convertMinutesToTime(endTimeInMinutes)}`}</p>
+                        scheduling.startTimeInMinutes
+                      )} - ${convertMinutesToTime(scheduling.endTimeInMinutes)}`}</p>
                     </div>
                     <SchedulingStatus status={scheduling.status} />
                     <div className="flex-1">

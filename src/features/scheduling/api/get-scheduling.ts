@@ -14,6 +14,7 @@ export const getPublicScheduling = publicProcedure
       },
       include: {
         service: true,
+        customer: true,
       },
     })
 
@@ -26,15 +27,18 @@ export const getPublicScheduling = publicProcedure
 
     return {
       id: prismaScheduling.id,
-      startDate: prismaScheduling.startDate.toISOString(),
-      endDate: prismaScheduling.endDate.toISOString(),
+      date: prismaScheduling.date.toISOString(),
+      startTimeInMinutes: prismaScheduling.startTimeInMinutes,
+      endTimeInMinutes: prismaScheduling.endTimeInMinutes,
       status: convertSchedulingStatus.toHttp(prismaScheduling.status),
-      customerName: prismaScheduling.customerName,
-      customerPhone: prismaScheduling.customerPhone,
       service: {
         id: prismaScheduling.service.id,
         name: prismaScheduling.service.name,
         timeInMinutes: prismaScheduling.service.timeInMinutes,
+      },
+      customer: {
+        name: prismaScheduling.customer.name,
+        whatsappNumber: prismaScheduling.customer.whatsappNumber,
       },
     }
   })

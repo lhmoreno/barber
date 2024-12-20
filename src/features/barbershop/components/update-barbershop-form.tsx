@@ -24,11 +24,11 @@ import { useToast } from '@/hooks/use-toast'
 import { api } from '@/lib/trpc/api-react'
 
 import {
-  UpdateInfoSchema,
-  updateInfoSchema,
-} from '../schemas/update-info-schema'
+  UpdateBarbershopSchema,
+  updateBarbershopSchema,
+} from '../schemas/update-barbershop-schema'
 
-export function UpdateInfoForm() {
+export function UpdateBarbershopForm() {
   const { toast } = useToast()
 
   const [imageErrorMsg, setImageErrorMsg] = useState<string>()
@@ -37,25 +37,25 @@ export function UpdateInfoForm() {
 
   const utils = api.useUtils()
 
-  const form = useForm<UpdateInfoSchema>({
-    resolver: zodResolver(updateInfoSchema),
+  const form = useForm<UpdateBarbershopSchema>({
+    resolver: zodResolver(updateBarbershopSchema),
   })
 
-  const { data: info, isLoading: isInfoLoading } =
-    api.info.public.get.useQuery()
+  const { data: barbershop, isLoading: isBarbershopLoading } =
+    api.barbershop.get.useQuery()
 
   useEffect(() => {
-    if (info) {
-      form.reset(info)
+    if (barbershop) {
+      form.reset(barbershop)
     }
-  }, [form, info])
+  }, [form, barbershop])
 
-  const { mutate: updateInfoFn, isPending: isUpdateInfoPending } =
-    api.info.update.useMutation({
+  const { mutate: updateBarbershopFn, isPending: isUpdateBarbershopPending } =
+    api.barbershop.update.useMutation({
       onError: (error) => {
         console.error(error)
 
-        form.reset(info)
+        form.reset(barbershop)
 
         toast({
           title: 'Ocorreu um erro inesperado',
@@ -71,7 +71,7 @@ export function UpdateInfoForm() {
     })
 
   const { mutate: uploadImageFn, isPending: isUploadImagePending } =
-    api.info.updateLogo.useMutation({
+    api.barbershop.updateLogo.useMutation({
       onError: (error) => {
         console.error(error)
 
@@ -80,7 +80,7 @@ export function UpdateInfoForm() {
         })
       },
       onSuccess: () => {
-        utils.info.public.get.refetch()
+        utils.barbershop.public.get.refetch()
 
         update()
 
@@ -91,7 +91,7 @@ export function UpdateInfoForm() {
     })
 
   const { mutate: removeImageFn, isPending: isRemoveImagePending } =
-    api.info.removeLogo.useMutation({
+    api.barbershop.removeLogo.useMutation({
       onError: (error) => {
         console.error(error)
 
@@ -100,7 +100,7 @@ export function UpdateInfoForm() {
         })
       },
       onSuccess: () => {
-        utils.info.public.get.refetch()
+        utils.barbershop.public.get.refetch()
 
         update()
 
@@ -110,11 +110,11 @@ export function UpdateInfoForm() {
       },
     })
 
-  function handleSubmit(data: UpdateInfoSchema) {
-    if (info) {
-      updateInfoFn({
-        name: info.name !== data.name ? data.name : undefined,
-        bio: info.bio !== data.bio ? data.bio : undefined,
+  function handleSubmit(data: UpdateBarbershopSchema) {
+    if (barbershop) {
+      updateBarbershopFn({
+        name: barbershop.name !== data.name ? data.name : undefined,
+        bio: barbershop.bio !== data.bio ? data.bio : undefined,
       })
     }
   }
@@ -163,13 +163,13 @@ export function UpdateInfoForm() {
     <>
       <Card>
         <CardContent className="space-y-5 pt-6">
-          {info && (
+          {barbershop && (
             <div className="space-y-6">
               <div className="flex gap-3">
                 <Avatar className="h-16 w-16">
-                  <AvatarImage src={info.logoUrl ?? undefined} />
+                  <AvatarImage src={barbershop.logoUrl ?? undefined} />
                   <AvatarFallback>
-                    {info.name.slice(0, 2).toUpperCase()}
+                    {barbershop.name.slice(0, 2).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                 <div>
@@ -196,7 +196,7 @@ export function UpdateInfoForm() {
                       className="ml-2"
                       disabled={
                         isUploadImagePending ||
-                        !info.logoUrl ||
+                        !barbershop.logoUrl ||
                         isRemoveImagePending
                       }
                       onClick={() => removeImageFn()}
@@ -255,8 +255,8 @@ export function UpdateInfoForm() {
                     )}
                   />
 
-                  <Button disabled={isUpdateInfoPending}>
-                    {!isUpdateInfoPending ? (
+                  <Button disabled={isUpdateBarbershopPending}>
+                    {!isUpdateBarbershopPending ? (
                       'Salvar'
                     ) : (
                       <RefreshCwIcon className="h-4 w-4 animate-spin" />
@@ -266,7 +266,7 @@ export function UpdateInfoForm() {
               </Form>
             </div>
           )}
-          {isInfoLoading && (
+          {isBarbershopLoading && (
             <div className="mt-6 space-y-10">
               <Skeleton className="h-9" />
               <Skeleton className="h-9" />

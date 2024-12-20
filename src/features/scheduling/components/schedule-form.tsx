@@ -27,8 +27,10 @@ const infoSchema = z.object({
 export function ScheduleForm({
   dateTime,
   service,
+  slug,
 }: {
   dateTime: string
+  slug: string
   service: RouterOutputs['service']['public']['get']
 }) {
   const router = useRouter()
@@ -49,10 +51,12 @@ export function ScheduleForm({
 
   function handleSubmit(data: z.infer<typeof infoSchema>) {
     createSchedulingFn({
-      name: data.name,
-      phoneNumber: data.phone,
+      slug,
       serviceId: service.id,
-      startDate: dateTime,
+      date: dateTime,
+      name: data.name,
+      whatsappNumber: data.phone,
+      message: data.message,
     })
   }
 

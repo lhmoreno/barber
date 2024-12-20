@@ -8,7 +8,9 @@ export const createService = protectedProcedure
     const prismaService = await ctx.prisma.service.create({
       data: {
         name: input.name,
+        description: input.description,
         timeInMinutes: input.timeInMinutes,
+        barberShopId: ctx.session.user.barberShopId,
       },
     })
 

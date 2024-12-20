@@ -8,16 +8,16 @@ import { protectedProcedure } from '@/lib/trpc/root'
 const MAX_SIZE = 1048576 // 1 MB em bytes
 const ALLOWED_TYPES = ['image/jpeg', 'image/png']
 
-export const uploadImage = protectedProcedure
+export const uploadLogo = protectedProcedure
   .input(
     zfd.formData({
       image: zfd.file(),
     })
   )
   .mutation(async ({ ctx, input }) => {
-    const prismaInfo = await ctx.prisma.barberShop.findFirst()
+    const prismaBarbershop = await ctx.prisma.barberShop.findFirst()
 
-    if (!prismaInfo) {
+    if (!prismaBarbershop) {
       throw new TRPCError({
         code: 'NOT_FOUND',
         message: 'User not found.',
@@ -73,8 +73,8 @@ export const uploadImage = protectedProcedure
       },
     })
 
-    if (prismaInfo.logoUrl) {
-      await deleteUpload({ url: prismaInfo.logoUrl })
+    if (prismaBarbershop.logoUrl) {
+      await deleteUpload({ url: prismaBarbershop.logoUrl })
     }
 
     return {
@@ -82,10 +82,10 @@ export const uploadImage = protectedProcedure
     }
   })
 
-export const removeImage = protectedProcedure.mutation(async ({ ctx }) => {
-  const prismaInfo = await ctx.prisma.barberShop.findFirst()
+export const removeLogo = protectedProcedure.mutation(async ({ ctx }) => {
+  const prismaBarbershop = await ctx.prisma.barberShop.findFirst()
 
-  if (!prismaInfo) {
+  if (!prismaBarbershop) {
     throw new TRPCError({
       code: 'NOT_FOUND',
       message: 'User not found.',
@@ -101,7 +101,7 @@ export const removeImage = protectedProcedure.mutation(async ({ ctx }) => {
     },
   })
 
-  if (prismaInfo.logoUrl) {
-    await deleteUpload({ url: prismaInfo.logoUrl })
+  if (prismaBarbershop.logoUrl) {
+    await deleteUpload({ url: prismaBarbershop.logoUrl })
   }
 })

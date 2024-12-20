@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 
-import { UpdateInfoForm } from '@/features/info/components/update-info-form'
+import { UpdateBarbershopForm } from '@/features/barbershop/components/update-barbershop-form'
 
 export const metadata: Metadata = {
   title: 'Configurações | Barber',
@@ -16,7 +16,7 @@ export default function Settings() {
         </p>
       </div>
 
-      <UpdateInfoForm />
+      <UpdateBarbershopForm />
     </div>
   )
 }

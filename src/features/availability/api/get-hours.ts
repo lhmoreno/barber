@@ -32,10 +32,8 @@ export const getHours = publicProcedure
 
     const prismaSchedulings = await ctx.prisma.scheduling.findMany({
       where: {
-        startDate: {
+        date: {
           gte: dateInput.toDate(),
-        },
-        endDate: {
           lte: dateInput.endOf('date').toDate(),
         },
         status: { in: ['CONFIRMED'] },
@@ -73,16 +71,9 @@ export const getHours = publicProcedure
 
     const times = possibleTimes.filter((time) => {
       const isTimeBlocked = prismaSchedulings.some((scheduling) => {
-        const startTimeInMinutes =
-          dayjs(scheduling.startDate).hour() * 60 +
-          dayjs(scheduling.startDate).minute()
-        const endTimeInMinutes =
-          dayjs(scheduling.endDate).hour() * 60 +
-          dayjs(scheduling.endDate).minute()
-
         return (
-          time + prismaService.timeInMinutes > startTimeInMinutes &&
-          time < endTimeInMinutes
+          time + prismaService.timeInMinutes > scheduling.startTimeInMinutes &&
+          time < scheduling.endTimeInMinutes
         )
       })
 

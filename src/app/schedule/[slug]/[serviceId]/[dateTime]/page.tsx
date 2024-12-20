@@ -10,7 +10,7 @@ import { api } from '@/lib/trpc/api-server'
 export default async function ScheduleDateTime({
   params,
 }: {
-  params: { serviceId: string; dateTime: string }
+  params: { serviceId: string; dateTime: string; slug: string }
 }) {
   const res1 = z.string().cuid().safeParse(params.serviceId)
 
@@ -52,7 +52,7 @@ export default async function ScheduleDateTime({
           {dayjs.tz.guess()}
         </p>
       </div>
-      <ScheduleForm dateTime={dateTime} service={service} />
+      <ScheduleForm dateTime={dateTime} service={service} slug={params.slug} />
     </div>
   )
 }

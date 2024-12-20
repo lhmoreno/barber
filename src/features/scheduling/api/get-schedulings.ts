@@ -42,10 +42,8 @@ export const getSchedulings = protectedProcedure
     const [count, prismaSchedulings] = await ctx.prisma.$transaction([
       ctx.prisma.scheduling.count({
         where: {
-          startDate: {
+          date: {
             gte: startDate,
-          },
-          endDate: {
             lte: endDate,
           },
           status: status,
@@ -53,19 +51,18 @@ export const getSchedulings = protectedProcedure
       }),
       ctx.prisma.scheduling.findMany({
         where: {
-          startDate: {
+          date: {
             gte: startDate,
-          },
-          endDate: {
             lte: endDate,
           },
           status: status,
         },
         include: {
           service: true,
+          customer: true,
         },
         orderBy: {
-          startDate: 'asc',
+          date: 'asc',
         },
         skip: show * (page - 1),
         take: show,
@@ -77,12 +74,13 @@ export const getSchedulings = protectedProcedure
     return {
       schedulings: prismaSchedulings.map((scheduling) => ({
         id: scheduling.id,
-        startDate: scheduling.startDate.toISOString(),
-        endDate: scheduling.endDate.toISOString(),
+        date: scheduling.date.toISOString(),
+        startTimeInMinutes: scheduling.startTimeInMinutes,
+        endTimeInMinutes: scheduling.endTimeInMinutes,
         status: convertSchedulingStatus.toHttp(scheduling.status),
         customer: {
-          name: scheduling.customerName,
-          phoneNumber: scheduling.customerPhone,
+          name: scheduling.customer.name,
+          whatsappNumber: scheduling.customer.whatsappNumber,
         },
         service: {
           id: scheduling.service.id,
