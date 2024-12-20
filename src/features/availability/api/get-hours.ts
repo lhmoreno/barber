@@ -1,8 +1,8 @@
-import { TRPCError } from "@trpc/server";
-import { z } from "zod";
+import { TRPCError } from '@trpc/server'
+import { z } from 'zod'
 
-import { dayjs } from "@/lib/dayjs";
-import { publicProcedure } from "@/lib/trpc/root";
+import { dayjs } from '@/lib/dayjs'
+import { publicProcedure } from '@/lib/trpc/root'
 
 export const getHours = publicProcedure
   .input(
@@ -18,17 +18,17 @@ export const getHours = publicProcedure
       where: {
         id: input.serviceId,
       },
-    });
+    })
 
     if (!prismaService) {
       throw new TRPCError({
-        code: "NOT_FOUND",
-        message: "Service not found.",
-      });
+        code: 'NOT_FOUND',
+        message: 'Service not found.',
+      })
     }
 
-    const dateInput = dayjs.utc(input.date).startOf("date");
-    const dateNow = dayjs.utc();
+    const dateInput = dayjs.utc(input.date).startOf('date')
+    const dateNow = dayjs.utc()
 
     const prismaSchedulings = await ctx.prisma.scheduling.findMany({
       where: {
@@ -36,60 +36,60 @@ export const getHours = publicProcedure
           gte: dateInput.toDate(),
         },
         endDate: {
-          lte: dateInput.endOf("date").toDate(),
+          lte: dateInput.endOf('date').toDate(),
         },
-        status: { in: ["CONFIRMED"] },
+        status: { in: ['CONFIRMED'] },
       },
-    });
+    })
 
     const availability = {
       startTimeInMinutes: 540,
       endTimeInMinutes: 1080,
-    };
+    }
 
-    if (dateInput.isSame(dateNow, "date")) {
-      const beforeMinutes = dateNow.hour() * 60 + dateNow.minute();
+    if (dateInput.isSame(dateNow, 'date')) {
+      const beforeMinutes = dateNow.hour() * 60 + dateNow.minute()
 
-      if (beforeMinutes >= availability.endTimeInMinutes) return { hours: [] };
+      if (beforeMinutes >= availability.endTimeInMinutes) return { hours: [] }
 
       if (beforeMinutes > availability.startTimeInMinutes) {
-        const newStartMinutes = Math.ceil(beforeMinutes / 15) * 15;
+        const newStartMinutes = Math.ceil(beforeMinutes / 15) * 15
 
-        availability.startTimeInMinutes = newStartMinutes;
+        availability.startTimeInMinutes = newStartMinutes
       }
     }
 
     const totalAvailableMinutes =
-      availability.endTimeInMinutes - availability.startTimeInMinutes;
+      availability.endTimeInMinutes - availability.startTimeInMinutes
 
     const posibilities = Math.floor(
       totalAvailableMinutes / prismaService.timeInMinutes
-    );
+    )
 
     const possibleTimes = Array.from({ length: posibilities }).map(
       (_, i) =>
         availability.startTimeInMinutes + prismaService.timeInMinutes * i
-    );
+    )
 
     const times = possibleTimes.filter((time) => {
       const isTimeBlocked = prismaSchedulings.some((scheduling) => {
         const startTimeInMinutes =
           dayjs(scheduling.startDate).hour() * 60 +
-          dayjs(scheduling.startDate).minute();
+          dayjs(scheduling.startDate).minute()
         const endTimeInMinutes =
           dayjs(scheduling.endDate).hour() * 60 +
-          dayjs(scheduling.endDate).minute();
+          dayjs(scheduling.endDate).minute()
 
         return (
           time + prismaService.timeInMinutes > startTimeInMinutes &&
           time < endTimeInMinutes
-        );
-      });
+        )
+      })
 
-      return !isTimeBlocked;
-    });
+      return !isTimeBlocked
+    })
 
     return {
       hours: times,
-    };
-  });
+    }
+  })

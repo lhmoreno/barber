@@ -4,31 +4,34 @@ import {
   ClockIcon,
   HardHatIcon,
   UserIcon,
-} from "lucide-react";
-import { Metadata } from "next";
+} from 'lucide-react'
+import { notFound } from 'next/navigation'
 
-import { Button } from "@/components/ui/button";
-import { SchedulingStatus } from "@/features/scheduling/components/scheduling-status";
-import { dayjs } from "@/lib/dayjs";
-import { convertMinutesToTime } from "@/lib/helpers/minutes";
-import { notFound } from "next/navigation";
-import { api } from "@/lib/trpc/api-server";
+import { Button } from '@/components/ui/button'
+import { SchedulingStatus } from '@/features/scheduling/components/scheduling-status'
+import { dayjs } from '@/lib/dayjs'
+import { convertMinutesToTime } from '@/lib/helpers/minutes'
+import { api } from '@/lib/trpc/api-server'
 
-export const metadata: Metadata = {
-  title: "Agendamento realizado | Barber",
-};
+export async function generateMetadata() {
+  const info = await api.info.public.get()
+
+  return {
+    title: `${info.name} | Barber`,
+  }
+}
 
 export default async function Scheduling({
   params,
 }: {
-  params: { schedulingId: string };
+  params: { schedulingId: string }
 }) {
   const scheduling = await api.scheduling.public.get({
     id: params.schedulingId,
-  });
+  })
 
   if (!scheduling) {
-    notFound();
+    notFound()
   }
 
   return (
@@ -55,7 +58,7 @@ export default async function Scheduling({
             </div>
             <div className="text-end">
               <p className="font-medium">
-                {dayjs().format("D [de] MMMM [de] YYYY[,] dddd")}
+                {dayjs().format('D [de] MMMM [de] YYYY[,] dddd')}
               </p>
               <p className="text-muted-foreground">{`${convertMinutesToTime(
                 dayjs(scheduling.startDate).hour() * 60 +
@@ -106,5 +109,5 @@ export default async function Scheduling({
         </div>
       </div>
     </div>
-  );
+  )
 }

@@ -1,11 +1,11 @@
-import { createTRPCRouter } from "@/lib/trpc/root";
+import { createTRPCRouter } from '@/lib/trpc/root'
 
-import { getPublicServices } from "./get-public-services";
-import { getPublicService } from "./get-service";
-import { getServices } from "./get-services";
-import { createService } from "./create-service";
-import { updateService } from "./update-service";
-import { deleteService } from "./delete-service";
+import { createService } from './create-service'
+import { deleteService } from './delete-service'
+import { getPublicServices } from './get-public-services'
+import { getPublicService } from './get-service'
+import { getServices } from './get-services'
+import { updateService } from './update-service'
 
 export const serviceRouter = createTRPCRouter({
   getAll: getServices,
@@ -17,4 +17,4 @@ export const serviceRouter = createTRPCRouter({
     getAll: getPublicServices,
     get: getPublicService,
   },
-});
+})

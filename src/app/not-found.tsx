@@ -1,8 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "404 | Barber",
-};
+  title: '404 | Barber',
+}
 
 export default async function NotFound() {
   return (
@@ -12,5 +12,5 @@ export default async function NotFound() {
         <p className="mt-2 text-lg">Página não encontrada!</p>
       </div>
     </div>
-  );
+  )
 }

@@ -1,6 +1,6 @@
-import { protectedProcedure } from "@/lib/trpc/root";
+import { protectedProcedure } from '@/lib/trpc/root'
 
-import { createServiceSchema } from "../schemas/create-service-schema";
+import { createServiceSchema } from '../schemas/create-service-schema'
 
 export const createService = protectedProcedure
   .input(createServiceSchema)
@@ -10,7 +10,7 @@ export const createService = protectedProcedure
         name: input.name,
         timeInMinutes: input.timeInMinutes,
       },
-    });
+    })
 
-    return { id: prismaService.id };
-  });
+    return { id: prismaService.id }
+  })

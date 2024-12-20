@@ -1,8 +1,8 @@
-import { z } from "zod";
+import { z } from 'zod'
 
-import { protectedProcedure } from "@/lib/trpc/root";
+import { protectedProcedure } from '@/lib/trpc/root'
 
-import { createServiceSchema } from "../schemas/create-service-schema";
+import { createServiceSchema } from '../schemas/create-service-schema'
 
 export const updateService = protectedProcedure
   .input(createServiceSchema.extend({ id: z.string().cuid() }))
@@ -15,5 +15,5 @@ export const updateService = protectedProcedure
         name: input.name,
         timeInMinutes: input.timeInMinutes,
       },
-    });
-  });
+    })
+  })

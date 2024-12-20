@@ -1,37 +1,37 @@
-"use client";
+'use client'
 
-import { ChevronDown, ChevronUpIcon, LogOut } from "lucide-react";
-import { signOut, useSession } from "next-auth/react";
-import { useState } from "react";
+import { ChevronDown, ChevronUpIcon, LogOut } from 'lucide-react'
+import { signOut, useSession } from 'next-auth/react'
+import { useState } from 'react'
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { cn } from "@/lib/utils";
+} from '@/components/ui/dropdown-menu'
+import { cn } from '@/lib/utils'
 
 type UserButtonProps = {
-  short?: boolean;
-  className?: string;
-  arrowTop?: boolean;
-};
+  short?: boolean
+  className?: string
+  arrowTop?: boolean
+}
 
 export function UserButton({ short, className, arrowTop }: UserButtonProps) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false)
 
-  const { data } = useSession();
+  const { data } = useSession()
 
-  const user = data?.user;
+  const user = data?.user
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
         <Button
-          className={cn("w-full justify-between", short && "w-fit", className)}
+          className={cn('w-full justify-between', short && 'w-fit', className)}
           variant="ghost"
           onClick={() => setOpen(true)}
         >
@@ -45,26 +45,26 @@ export function UserButton({ short, className, arrowTop }: UserButtonProps) {
             {!short && user?.name}
           </div>
           {arrowTop ? (
-            <ChevronUpIcon className="text-muted-foreground h-4 w-4" />
+            <ChevronUpIcon className="h-4 w-4 text-muted-foreground" />
           ) : (
-            <ChevronDown className="text-muted-foreground h-4 w-4" />
+            <ChevronDown className="h-4 w-4 text-muted-foreground" />
           )}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-48 p-0">
         <DropdownMenuItem className="p-0">
           <Button
-            className="text-muted-foreground w-full justify-start font-medium"
+            className="w-full justify-start font-medium text-muted-foreground"
             variant="ghost"
             onClick={async () => {
-              setOpen(false);
-              await signOut();
+              setOpen(false)
+              await signOut()
             }}
           >
-            <LogOut className="text-destructive h-4 w-4" /> Sair
+            <LogOut className="h-4 w-4 text-destructive" /> Sair
           </Button>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  );
+  )
 }

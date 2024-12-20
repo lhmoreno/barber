@@ -1,10 +1,10 @@
-import { Metadata } from "next";
+import { Metadata } from 'next'
 
-import { SchedulingsList } from "@/features/scheduling/components/schedulings-list";
+import { SchedulingsList } from '@/features/scheduling/components/schedulings-list'
 
 export const metadata: Metadata = {
-  title: "Agendamentos | Barber",
-};
+  title: 'Agendamentos | Barber',
+}
 
 export default async function Schedulings() {
   return (
@@ -16,5 +16,5 @@ export default async function Schedulings() {
 
       <SchedulingsList />
     </div>
-  );
+  )
 }

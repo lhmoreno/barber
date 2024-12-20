@@ -1,10 +1,10 @@
-"use client";
+'use client'
 
-import { MenuIcon } from "lucide-react";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { MenuIcon } from 'lucide-react'
+import { usePathname } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button'
 import {
   Sheet,
   SheetContent,
@@ -12,18 +12,18 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet";
+} from '@/components/ui/sheet'
 
-import { NavLinks } from "./nav-links";
+import { NavLinks } from './nav-links'
 
 export function DrawerButton() {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false)
 
-  const pathname = usePathname();
+  const pathname = usePathname()
 
   useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
+    setOpen(false)
+  }, [pathname])
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -32,7 +32,7 @@ export function DrawerButton() {
           <MenuIcon className="h-4 w-4" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="left" className="bg-card w-56">
+      <SheetContent side="left" className="w-56 bg-card">
         <SheetHeader className="hidden">
           <SheetTitle>Menu de acesso</SheetTitle>
           <SheetDescription>
@@ -42,5 +42,5 @@ export function DrawerButton() {
         <NavLinks className="mt-4" />
       </SheetContent>
     </Sheet>
-  );
+  )
 }

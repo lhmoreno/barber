@@ -1,38 +1,38 @@
-"use client";
+'use client'
 
-import { PencilIcon, PlusIcon, TimerIcon, TrashIcon } from "lucide-react";
+import { PencilIcon, PlusIcon, TimerIcon, TrashIcon } from 'lucide-react'
 
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useToast } from "@/hooks/use-toast";
-import { showTimeDisplay } from "@/lib/helpers/show-time-display";
-import { api } from "@/lib/trpc/api-react";
-import { cn } from "@/lib/utils";
+import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
+import { useToast } from '@/hooks/use-toast'
+import { showTimeDisplay } from '@/lib/helpers/show-time-display'
+import { api } from '@/lib/trpc/api-react'
+import { cn } from '@/lib/utils'
 
-import { DeleteServiceDialog } from "./delete-service-dialog";
-import { ServiceDialogForm } from "./service-dialog-form";
+import { DeleteServiceDialog } from './delete-service-dialog'
+import { ServiceDialogForm } from './service-dialog-form'
 
 export function ServicesList() {
-  const { toast } = useToast();
+  const { toast } = useToast()
 
-  const utils = api.useUtils();
+  const utils = api.useUtils()
 
-  const { data, isLoading } = api.service.getAll.useQuery();
+  const { data, isLoading } = api.service.getAll.useQuery()
 
   const { mutate: createServiceFn } = api.service.create.useMutation({
     onMutate(service) {
-      const tempId = Math.round(Math.random() * 1000).toString();
+      const tempId = Math.round(Math.random() * 1000).toString()
 
       utils.service.getAll.setData(undefined, (cache) => {
         if (cache) {
           return {
             ...cache,
             services: [...cache.services, { ...service, id: tempId }],
-          };
+          }
         }
-      });
+      })
 
-      return { tempId };
+      return { tempId }
     },
     onError(_, __, ctx) {
       if (ctx) {
@@ -43,9 +43,9 @@ export function ServicesList() {
               services: cache.services.filter(
                 (service) => service.id !== ctx.tempId
               ),
-            };
+            }
           }
-        });
+        })
       }
     },
     onSuccess({ id }, _, ctx) {
@@ -57,21 +57,21 @@ export function ServicesList() {
               services: cache.services.map((s) =>
                 s.id === ctx.tempId ? { ...s, id } : s
               ),
-            };
+            }
           }
-        });
+        })
       }
 
       toast({
-        title: "Adicionado",
-        description: "Serviço adicionado com sucesso",
-      });
+        title: 'Adicionado',
+        description: 'Serviço adicionado com sucesso',
+      })
     },
-  });
+  })
 
   const { mutate: updateServiceFn } = api.service.update.useMutation({
     onMutate(service) {
-      const cache = utils.service.getAll.getData();
+      const cache = utils.service.getAll.getData()
 
       if (cache) {
         utils.service.getAll.setData(undefined, {
@@ -79,49 +79,49 @@ export function ServicesList() {
           services: cache.services.map((s) =>
             s.id === service.id ? service : s
           ),
-        });
+        })
       }
 
-      return { cache };
+      return { cache }
     },
     onError(_, __, ctx) {
       if (ctx?.cache) {
-        utils.service.getAll.setData(undefined, ctx.cache);
+        utils.service.getAll.setData(undefined, ctx.cache)
       }
     },
     onSuccess() {
       toast({
-        title: "Atualizado",
-        description: "Serviço atualizado com sucesso",
-      });
+        title: 'Atualizado',
+        description: 'Serviço atualizado com sucesso',
+      })
     },
-  });
+  })
 
   const { mutate: deleteServiceFn } = api.service.delete.useMutation({
     onMutate({ id }) {
-      const cache = utils.service.getAll.getData();
+      const cache = utils.service.getAll.getData()
 
       if (cache) {
         utils.service.getAll.setData(undefined, {
           ...cache,
           services: cache.services.filter((service) => service.id !== id),
-        });
+        })
       }
 
-      return { cache };
+      return { cache }
     },
     onError(_, __, ctx) {
       if (ctx?.cache) {
-        utils.service.getAll.setData(undefined, ctx.cache);
+        utils.service.getAll.setData(undefined, ctx.cache)
       }
     },
     onSuccess() {
       toast({
-        title: "Deletado",
-        description: "Serviço deletado com sucesso",
-      });
+        title: 'Deletado',
+        description: 'Serviço deletado com sucesso',
+      })
     },
-  });
+  })
 
   return (
     <div>
@@ -143,8 +143,8 @@ export function ServicesList() {
             <li
               key={service.id}
               className={cn(
-                "flex items-center justify-between gap-2 p-4",
-                index !== 0 && "border-t"
+                'flex items-center justify-between gap-2 p-4',
+                index !== 0 && 'border-t'
               )}
             >
               <div className="flex-1">
@@ -182,12 +182,12 @@ export function ServicesList() {
       {isLoading && (
         <div className="mt-8 rounded-lg border">
           {Array.from({ length: 3 }).map((_, index) => (
-            <div key={index} className={cn("p-3", index !== 0 && "border-t")}>
+            <div key={index} className={cn('p-3', index !== 0 && 'border-t')}>
               <Skeleton className="h-16 rounded-lg" />
             </div>
           ))}
         </div>
       )}
     </div>
-  );
+  )
 }

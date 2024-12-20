@@ -1,11 +1,11 @@
-import { z } from "zod";
+import { z } from 'zod'
 
-import { protectedProcedure } from "@/lib/trpc/root";
+import { protectedProcedure } from '@/lib/trpc/root'
 
 import {
   convertSchedulingStatus,
   SchedulingStatus,
-} from "../helpers/convert-scheduling-status";
+} from '../helpers/convert-scheduling-status'
 
 export const getSchedulings = protectedProcedure
   .input(
@@ -16,7 +16,7 @@ export const getSchedulings = protectedProcedure
           .enum<
             SchedulingStatus,
             Readonly<[SchedulingStatus, ...SchedulingStatus[]]>
-          >(["confirmed", "canceled"])
+          >(['confirmed', 'canceled'])
           .optional(),
         range: z
           .object({
@@ -30,14 +30,14 @@ export const getSchedulings = protectedProcedure
   .query(async ({ ctx, input }) => {
     const startDate = input?.range?.startDate
       ? input.range.startDate
-      : undefined;
-    const endDate = input?.range?.startDate ? input.range.endDate : undefined;
+      : undefined
+    const endDate = input?.range?.startDate ? input.range.endDate : undefined
     const status = input?.status
       ? convertSchedulingStatus.toDb(input.status)
-      : undefined;
-    const page = input?.page ?? 1;
+      : undefined
+    const page = input?.page ?? 1
 
-    const show = 25;
+    const show = 25
 
     const [count, prismaSchedulings] = await ctx.prisma.$transaction([
       ctx.prisma.scheduling.count({
@@ -65,14 +65,14 @@ export const getSchedulings = protectedProcedure
           service: true,
         },
         orderBy: {
-          startDate: "asc",
+          startDate: 'asc',
         },
         skip: show * (page - 1),
         take: show,
       }),
-    ]);
+    ])
 
-    const totalPages = Math.ceil(count / show);
+    const totalPages = Math.ceil(count / show)
 
     return {
       schedulings: prismaSchedulings.map((scheduling) => ({
@@ -91,5 +91,5 @@ export const getSchedulings = protectedProcedure
       })),
       page,
       totalPages,
-    };
-  });
+    }
+  })

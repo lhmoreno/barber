@@ -1,12 +1,13 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { RefreshCwIcon } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+'use client'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { RefreshCwIcon } from 'lucide-react'
+import { useSession } from 'next-auth/react'
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 import {
   Form,
   FormControl,
@@ -14,150 +15,149 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
-import { api } from "@/lib/trpc/api-react";
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Textarea } from '@/components/ui/textarea'
+import { useToast } from '@/hooks/use-toast'
+import { api } from '@/lib/trpc/api-react'
 
 import {
   UpdateInfoSchema,
   updateInfoSchema,
-} from "../schemas/update-info-schema";
-import { useSession } from "next-auth/react";
+} from '../schemas/update-info-schema'
 
 export function UpdateInfoForm() {
-  const { toast } = useToast();
+  const { toast } = useToast()
 
-  const [imageErrorMsg, setImageErrorMsg] = useState<string>();
+  const [imageErrorMsg, setImageErrorMsg] = useState<string>()
 
-  const { update } = useSession();
+  const { update } = useSession()
 
-  const utils = api.useUtils();
+  const utils = api.useUtils()
 
   const form = useForm<UpdateInfoSchema>({
     resolver: zodResolver(updateInfoSchema),
-  });
+  })
 
   const { data: info, isLoading: isInfoLoading } =
-    api.info.public.get.useQuery();
+    api.info.public.get.useQuery()
 
   useEffect(() => {
     if (info) {
-      form.reset(info);
+      form.reset(info)
     }
-  }, [form, info]);
+  }, [form, info])
 
   const { mutate: updateInfoFn, isPending: isUpdateInfoPending } =
     api.info.update.useMutation({
       onError: (error) => {
-        console.error(error);
+        console.error(error)
 
-        form.reset(info);
+        form.reset(info)
 
         toast({
-          title: "Ocorreu um erro inesperado",
-        });
+          title: 'Ocorreu um erro inesperado',
+        })
       },
       onSuccess: async () => {
-        await update();
+        await update()
 
         toast({
-          title: "Informações atualizadas",
-        });
+          title: 'Informações atualizadas',
+        })
       },
-    });
+    })
 
   const { mutate: uploadImageFn, isPending: isUploadImagePending } =
     api.info.updateLogo.useMutation({
       onError: (error) => {
-        console.error(error);
+        console.error(error)
 
         toast({
-          title: "Ocorreu um erro inesperado",
-        });
+          title: 'Ocorreu um erro inesperado',
+        })
       },
       onSuccess: () => {
-        utils.info.public.get.refetch();
+        utils.info.public.get.refetch()
 
-        update();
+        update()
 
         toast({
-          title: "Imagem atualizada",
-        });
+          title: 'Imagem atualizada',
+        })
       },
-    });
+    })
 
   const { mutate: removeImageFn, isPending: isRemoveImagePending } =
     api.info.removeLogo.useMutation({
       onError: (error) => {
-        console.error(error);
+        console.error(error)
 
         toast({
-          title: "Ocorreu um erro inesperado",
-        });
+          title: 'Ocorreu um erro inesperado',
+        })
       },
       onSuccess: () => {
-        utils.info.public.get.refetch();
+        utils.info.public.get.refetch()
 
-        update();
+        update()
 
         toast({
-          title: "Imagem removida",
-        });
+          title: 'Imagem removida',
+        })
       },
-    });
+    })
 
   function handleSubmit(data: UpdateInfoSchema) {
     if (info) {
       updateInfoFn({
         name: info.name !== data.name ? data.name : undefined,
         bio: info.bio !== data.bio ? data.bio : undefined,
-      });
+      })
     }
   }
 
   const handleChangeImage: React.ChangeEventHandler<HTMLInputElement> = (
     ev
   ) => {
-    setImageErrorMsg(undefined);
+    setImageErrorMsg(undefined)
 
-    const file = ev.target.files?.[0];
+    const file = ev.target.files?.[0]
 
     if (!file) {
-      setImageErrorMsg("Imagem inválida.");
-      return;
+      setImageErrorMsg('Imagem inválida.')
+      return
     }
 
-    const maxSize = 1048576;
+    const maxSize = 1048576
 
     if (file.size > maxSize) {
-      setImageErrorMsg("A imagem deve ter no máximo 1MB.");
-      return;
+      setImageErrorMsg('A imagem deve ter no máximo 1MB.')
+      return
     }
 
-    const image = new Image();
-    const objectUrl = URL.createObjectURL(file);
+    const image = new Image()
+    const objectUrl = URL.createObjectURL(file)
 
     image.onload = () => {
-      const { width, height } = image;
+      const { width, height } = image
 
       if (width > 1024 || height > 1024) {
-        setImageErrorMsg("A imagem deve ter no máximo 1024x1024 pixels.");
-        return;
+        setImageErrorMsg('A imagem deve ter no máximo 1024x1024 pixels.')
+        return
       }
 
-      const formData = new FormData();
-      formData.append("image", file);
-      uploadImageFn(formData);
+      const formData = new FormData()
+      formData.append('image', file)
+      uploadImageFn(formData)
 
-      URL.revokeObjectURL(objectUrl);
-    };
+      URL.revokeObjectURL(objectUrl)
+    }
 
-    image.src = objectUrl;
-  };
+    image.src = objectUrl
+  }
 
   return (
     <>
@@ -221,7 +221,7 @@ export function UpdateInfoForm() {
                       <FormItem className="flex flex-col">
                         <FormLabel>Nome</FormLabel>
                         <FormControl>
-                          <Input {...field} value={field.value ?? ""} />
+                          <Input {...field} value={field.value ?? ''} />
                         </FormControl>
 
                         <FormMessage />
@@ -239,10 +239,10 @@ export function UpdateInfoForm() {
                             {...field}
                             disabled={field.disabled}
                             placeholder="Descreva um pouco sobre você..."
-                            value={field.value ?? ""}
+                            value={field.value ?? ''}
                             onChange={(ev) =>
                               field.onChange(
-                                ev.target.value?.trim() === ""
+                                ev.target.value?.trim() === ''
                                   ? null
                                   : ev.target.value
                               )
@@ -257,7 +257,7 @@ export function UpdateInfoForm() {
 
                   <Button disabled={isUpdateInfoPending}>
                     {!isUpdateInfoPending ? (
-                      "Salvar"
+                      'Salvar'
                     ) : (
                       <RefreshCwIcon className="h-4 w-4 animate-spin" />
                     )}
@@ -278,5 +278,5 @@ export function UpdateInfoForm() {
         </CardContent>
       </Card>
     </>
-  );
+  )
 }

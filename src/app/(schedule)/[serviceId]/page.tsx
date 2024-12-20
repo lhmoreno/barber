@@ -1,26 +1,26 @@
-import { TimerIcon } from "lucide-react";
+import { TimerIcon } from 'lucide-react'
+import { notFound } from 'next/navigation'
+import { z } from 'zod'
 
-import { Badge } from "@/components/ui/badge";
-import { dayjs } from "@/lib/dayjs";
-import { showTimeDisplay } from "@/lib/helpers/show-time-display";
-import { SelectDateForm } from "@/features/scheduling/components/select-date-form";
-import { api } from "@/lib/trpc/api-server";
-import { z } from "zod";
-import { notFound } from "next/navigation";
+import { Badge } from '@/components/ui/badge'
+import { SelectDateForm } from '@/features/scheduling/components/select-date-form'
+import { dayjs } from '@/lib/dayjs'
+import { showTimeDisplay } from '@/lib/helpers/show-time-display'
+import { api } from '@/lib/trpc/api-server'
 
 export default async function ScheduleDateTime({
   params,
 }: {
-  params: { serviceId: string };
+  params: { serviceId: string }
 }) {
-  const res = z.string().cuid().safeParse(params.serviceId);
+  const res = z.string().cuid().safeParse(params.serviceId)
 
   if (!res.success) {
-    notFound();
+    notFound()
   }
 
-  const service = await api.service.public.get({ id: params.serviceId });
-  const unavailable = await api.availability.public.getUnavailableDays();
+  const service = await api.service.public.get({ id: params.serviceId })
+  const unavailable = await api.availability.public.getUnavailableDays()
 
   return (
     <div className="flex flex-col rounded-md border bg-card lg:flex-row">
@@ -36,5 +36,5 @@ export default async function ScheduleDateTime({
       </div>
       <SelectDateForm serviceId={params.serviceId} unavailable={unavailable} />
     </div>
-  );
+  )
 }

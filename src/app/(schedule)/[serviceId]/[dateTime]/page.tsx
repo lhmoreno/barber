@@ -1,37 +1,37 @@
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon } from 'lucide-react'
+import { notFound } from 'next/navigation'
+import { z } from 'zod'
 
-import { ScheduleForm } from "@/features/scheduling/components/schedule-form";
-import { dayjs } from "@/lib/dayjs";
-import { convertMinutesToTime } from "@/lib/helpers/minutes";
-import { api } from "@/lib/trpc/api-server";
-import { z } from "zod";
-import { notFound } from "next/navigation";
+import { ScheduleForm } from '@/features/scheduling/components/schedule-form'
+import { dayjs } from '@/lib/dayjs'
+import { convertMinutesToTime } from '@/lib/helpers/minutes'
+import { api } from '@/lib/trpc/api-server'
 
 export default async function ScheduleDateTime({
   params,
 }: {
-  params: { serviceId: string; dateTime: string };
+  params: { serviceId: string; dateTime: string }
 }) {
-  const res1 = z.string().cuid().safeParse(params.serviceId);
+  const res1 = z.string().cuid().safeParse(params.serviceId)
 
   if (!res1.success) {
-    notFound();
+    notFound()
   }
 
   const service = await api.service.public.get({
     id: params.serviceId,
-  });
+  })
 
-  const dateTime = decodeURIComponent(params.dateTime);
+  const dateTime = decodeURIComponent(params.dateTime)
 
-  const res2 = z.string().datetime().safeParse(dateTime);
+  const res2 = z.string().datetime().safeParse(dateTime)
 
   if (!res2.success) {
-    notFound();
+    notFound()
   }
 
-  const startTime = dayjs(dateTime).hour() * 60 + dayjs(dateTime).minute();
-  const endTime = startTime + service.timeInMinutes;
+  const startTime = dayjs(dateTime).hour() * 60 + dayjs(dateTime).minute()
+  const endTime = startTime + service.timeInMinutes
 
   return (
     <div className="mx-auto flex max-w-screen-md flex-col rounded-md border bg-card md:flex-row">
@@ -41,7 +41,7 @@ export default async function ScheduleDateTime({
           <CalendarIcon className="h-5 w-5 text-muted-foreground" />
           <div>
             <p className="font-medium">
-              {dayjs(dateTime).format("D [de] MMMM [de] YYYY[,] dddd")}
+              {dayjs(dateTime).format('D [de] MMMM [de] YYYY[,] dddd')}
             </p>
             <p className="text-sm text-muted-foreground">{`${convertMinutesToTime(
               startTime
@@ -54,5 +54,5 @@ export default async function ScheduleDateTime({
       </div>
       <ScheduleForm dateTime={dateTime} service={service} />
     </div>
-  );
+  )
 }

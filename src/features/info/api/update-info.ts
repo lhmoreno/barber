@@ -1,6 +1,6 @@
-import { protectedProcedure } from "@/lib/trpc/root";
+import { protectedProcedure } from '@/lib/trpc/root'
 
-import { updateInfoSchema } from "../schemas/update-info-schema";
+import { updateInfoSchema } from '../schemas/update-info-schema'
 
 export const updateInfo = protectedProcedure
   .input(updateInfoSchema)
@@ -10,5 +10,5 @@ export const updateInfo = protectedProcedure
         id: ctx.session.user.id,
       },
       data: input,
-    });
-  });
+    })
+  })

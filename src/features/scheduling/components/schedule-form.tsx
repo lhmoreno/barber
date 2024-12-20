@@ -1,8 +1,9 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+'use client'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/navigation'
+import { useForm } from 'react-hook-form'
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
@@ -10,42 +11,41 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { z } from "@/lib/zod";
-import { useRouter } from "next/navigation";
-import { api, RouterOutputs } from "@/lib/trpc/api-react";
-import { phoneNumberSchema } from "@/schemas/phone-number-schema";
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { api, RouterOutputs } from '@/lib/trpc/api-react'
+import { z } from '@/lib/zod'
+import { phoneNumberSchema } from '@/schemas/phone-number-schema'
 
 const infoSchema = z.object({
-  name: z.string().min(3, "Menos de 3 caracteres"),
+  name: z.string().min(3, 'Menos de 3 caracteres'),
   phone: phoneNumberSchema,
   message: z.string(),
-});
+})
 
 export function ScheduleForm({
   dateTime,
   service,
 }: {
-  dateTime: string;
-  service: RouterOutputs["service"]["public"]["get"];
+  dateTime: string
+  service: RouterOutputs['service']['public']['get']
 }) {
-  const router = useRouter();
+  const router = useRouter()
 
   const { mutate: createSchedulingFn, isPending } =
     api.scheduling.public.create.useMutation({
       onError: () => {
-        console.error("Não foi");
+        console.error('Não foi')
       },
       onSuccess: ({ id }) => {
-        router.push(`/scheduling/${id}`);
+        router.push(`/scheduling/${id}`)
       },
-    });
+    })
 
   const form = useForm<z.infer<typeof infoSchema>>({
     resolver: zodResolver(infoSchema),
-  });
+  })
 
   function handleSubmit(data: z.infer<typeof infoSchema>) {
     createSchedulingFn({
@@ -53,7 +53,7 @@ export function ScheduleForm({
       phoneNumber: data.phone,
       serviceId: service.id,
       startDate: dateTime,
-    });
+    })
   }
 
   return (
@@ -111,5 +111,5 @@ export function ScheduleForm({
         </div>
       </form>
     </Form>
-  );
+  )
 }

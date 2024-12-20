@@ -1,15 +1,27 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { api } from "@/lib/trpc/api-server";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { api } from '@/lib/trpc/api-server'
+
+async function getInfo() {
+  return await api.info.public.get()
+}
+
+export async function generateMetadata() {
+  const info = await getInfo()
+
+  return {
+    title: `${info.name} | Barber`,
+  }
+}
 
 export default async function ScheduleLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
-  const { name, bio, logoUrl } = await api.info.public.get();
+  const { name, bio, logoUrl } = await getInfo()
 
   return (
-    <div className="mt-8 mx-auto w-full max-w-screen-lg space-y-8 p-4">
+    <div className="mx-auto mt-8 w-full max-w-screen-lg space-y-8 p-4">
       <div className="flex flex-col items-center">
         <Avatar className="h-24 w-24">
           <AvatarImage src={logoUrl ?? undefined} />
@@ -21,5 +33,5 @@ export default async function ScheduleLayout({
 
       {children}
     </div>
-  );
+  )
 }

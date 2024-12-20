@@ -1,38 +1,38 @@
-"use client";
+'use client'
 
-import { signIn } from "next-auth/react";
+import { useRouter } from 'next/navigation'
+import { signIn } from 'next-auth/react'
+import { FormEventHandler, useState } from 'react'
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { FormEventHandler, useState } from "react";
-import { useRouter } from "next/navigation";
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 
 export function LoginForm() {
-  const [isError, setIsError] = useState(false);
+  const [isError, setIsError] = useState(false)
 
-  const router = useRouter();
+  const router = useRouter()
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (ev) => {
-    ev.preventDefault();
+    ev.preventDefault()
 
-    const formData = new FormData(ev.currentTarget);
+    const formData = new FormData(ev.currentTarget)
 
-    const password = formData.get("password")?.toString() ?? "";
+    const password = formData.get('password')?.toString() ?? ''
 
-    const response = await signIn("credentials", { password, redirect: false });
+    const response = await signIn('credentials', { password, redirect: false })
 
     if (!response) {
-      alert("Erro desconhecido (500)");
-      return;
+      alert('Erro desconhecido (500)')
+      return
     }
 
     if (!response.ok) {
-      setIsError(true);
+      setIsError(true)
     }
 
-    router.push("/admin");
-  };
+    router.push('/admin')
+  }
 
   return (
     <form className="space-y-4" onSubmit={handleSubmit}>
@@ -45,12 +45,12 @@ export function LoginForm() {
           placeholder="Senha de administrador"
         />
         {isError && (
-          <span className="text-destructive text-sm">Senha inválida</span>
+          <span className="text-sm text-destructive">Senha inválida</span>
         )}
       </div>
       <Button type="submit" className="w-full">
         Entrar
       </Button>
     </form>
-  );
+  )
 }

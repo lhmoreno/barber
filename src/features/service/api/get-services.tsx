@@ -1,7 +1,7 @@
-import { protectedProcedure } from "@/lib/trpc/root";
+import { protectedProcedure } from '@/lib/trpc/root'
 
 export const getServices = protectedProcedure.query(async ({ ctx }) => {
-  const prismaServices = await ctx.prisma.service.findMany();
+  const prismaServices = await ctx.prisma.service.findMany()
 
   return {
     services: prismaServices.map((service) => ({
@@ -9,5 +9,5 @@ export const getServices = protectedProcedure.query(async ({ ctx }) => {
       name: service.name,
       timeInMinutes: service.timeInMinutes,
     })),
-  };
-});
+  }
+})

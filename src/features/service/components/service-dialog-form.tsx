@@ -1,10 +1,10 @@
-"use client";
+'use client'
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -13,7 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog'
 import {
   Form,
   FormControl,
@@ -21,22 +21,22 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select'
 import {
   type CreateServiceSchema,
   createServiceSchema,
-} from "@/features/service/schemas/create-service-schema";
-import { RouterOutputs } from "@/lib/trpc/api-react";
+} from '@/features/service/schemas/create-service-schema'
+import { RouterOutputs } from '@/lib/trpc/api-react'
 
-export type Service = RouterOutputs["service"]["getAll"]["services"][0];
+export type Service = RouterOutputs['service']['getAll']['services'][0]
 
 export function ServiceDialogForm({
   children,
@@ -44,36 +44,36 @@ export function ServiceDialogForm({
   onCreateSubmit,
   onUpdateSubmit,
 }: {
-  children: React.ReactNode;
-  service?: Service;
-  onCreateSubmit: (service: Omit<Service, "id">) => void;
-  onUpdateSubmit: (service: Service) => void;
+  children: React.ReactNode
+  service?: Service
+  onCreateSubmit: (service: Omit<Service, 'id'>) => void
+  onUpdateSubmit: (service: Service) => void
 }) {
-  const isCreate = !service;
+  const isCreate = !service
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false)
 
   const form = useForm<CreateServiceSchema>({
     resolver: zodResolver(createServiceSchema),
     defaultValues: {
-      name: service?.name ?? "",
+      name: service?.name ?? '',
       timeInMinutes: service?.timeInMinutes ?? 5,
     },
-  });
+  })
 
   function close() {
-    setOpen(false);
-    form.reset();
+    setOpen(false)
+    form.reset()
   }
 
   function onSubmit(data: CreateServiceSchema) {
     if (isCreate) {
-      onCreateSubmit(data);
+      onCreateSubmit(data)
     } else {
-      onUpdateSubmit({ ...data, id: service.id });
+      onUpdateSubmit({ ...data, id: service.id })
     }
 
-    close();
+    close()
   }
 
   return (
@@ -82,11 +82,11 @@ export function ServiceDialogForm({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            {isCreate ? "Adicionar serviço" : "Alterar serviço"}
+            {isCreate ? 'Adicionar serviço' : 'Alterar serviço'}
           </DialogTitle>
           <DialogDescription>
-            Confirme os dados do serviço antes de clicar em{" "}
-            {isCreate ? "Adicionar" : "Atualizar"}
+            Confirme os dados do serviço antes de clicar em{' '}
+            {isCreate ? 'Adicionar' : 'Atualizar'}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -146,12 +146,12 @@ export function ServiceDialogForm({
                 Cancelar
               </Button>
               <Button type="submit">
-                {isCreate ? "Adicionar" : "Atualizar"}
+                {isCreate ? 'Adicionar' : 'Atualizar'}
               </Button>
             </DialogFooter>
           </form>
         </Form>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

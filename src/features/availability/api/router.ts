@@ -1,7 +1,7 @@
-import { createTRPCRouter } from "@/lib/trpc/root";
+import { createTRPCRouter } from '@/lib/trpc/root'
 
-import { getHours } from "./get-hours";
-import { getUnavailableDays } from "./get-unavailable-days";
+import { getHours } from './get-hours'
+import { getUnavailableDays } from './get-unavailable-days'
 
 export const availabilityRouter = createTRPCRouter({
   public: {
@@ -9,4 +9,4 @@ export const availabilityRouter = createTRPCRouter({
 
     getHours: getHours,
   },
-});
+})

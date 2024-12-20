@@ -1,32 +1,32 @@
-"use client";
+'use client'
 
-import { CalendarIcon, HardHatIcon, SettingsIcon } from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { CalendarIcon, HardHatIcon, SettingsIcon } from 'lucide-react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
-import { Icons } from "./icons";
-import { UserButton } from "./user-button";
+import { Icons } from './icons'
+import { UserButton } from './user-button'
 
 type NavLinksProps = {
-  className?: string;
-};
+  className?: string
+}
 
 export function NavLinks({ className }: NavLinksProps) {
-  const pathname = usePathname();
+  const pathname = usePathname()
   return (
-    <div className={cn("flex flex-col gap-8", className)}>
+    <div className={cn('flex flex-col gap-8', className)}>
       <Icons.logo className="mx-auto mt-4 h-6 w-28" />
 
       <nav className="flex-1 space-y-2">
         <Button
           className={cn(
-            "text-muted-foreground w-full justify-start font-medium",
-            pathname === "/admin/schedulings" && "text-foreground"
+            'w-full justify-start font-medium text-muted-foreground',
+            pathname === '/admin/schedulings' && 'text-foreground'
           )}
-          variant={pathname === "/admin/schedulings" ? "secondary" : "ghost"}
+          variant={pathname === '/admin/schedulings' ? 'secondary' : 'ghost'}
           asChild
         >
           <Link href="/admin/schedulings">
@@ -35,11 +35,11 @@ export function NavLinks({ className }: NavLinksProps) {
         </Button>
         <Button
           className={cn(
-            "text-muted-foreground w-full justify-start font-medium",
-            pathname.startsWith("/admin/services") && "text-foreground"
+            'w-full justify-start font-medium text-muted-foreground',
+            pathname.startsWith('/admin/services') && 'text-foreground'
           )}
           variant={
-            pathname.startsWith("/admin/services") ? "secondary" : "ghost"
+            pathname.startsWith('/admin/services') ? 'secondary' : 'ghost'
           }
           asChild
         >
@@ -49,10 +49,10 @@ export function NavLinks({ className }: NavLinksProps) {
         </Button>
         <Button
           className={cn(
-            "text-muted-foreground w-full justify-start font-medium",
-            pathname.startsWith("/admin/config") && "text-foreground"
+            'w-full justify-start font-medium text-muted-foreground',
+            pathname.startsWith('/admin/config') && 'text-foreground'
           )}
-          variant={pathname.startsWith("/admin/config") ? "secondary" : "ghost"}
+          variant={pathname.startsWith('/admin/config') ? 'secondary' : 'ghost'}
           asChild
         >
           <Link href="/admin/config">
@@ -63,5 +63,5 @@ export function NavLinks({ className }: NavLinksProps) {
 
       <UserButton className="hidden lg:flex" arrowTop />
     </div>
-  );
+  )
 }

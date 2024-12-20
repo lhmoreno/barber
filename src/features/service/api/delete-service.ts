@@ -1,6 +1,6 @@
-import { z } from "zod";
+import { z } from 'zod'
 
-import { protectedProcedure } from "@/lib/trpc/root";
+import { protectedProcedure } from '@/lib/trpc/root'
 
 export const deleteService = protectedProcedure
   .input(z.object({ id: z.string().cuid() }))
@@ -9,5 +9,5 @@ export const deleteService = protectedProcedure
       where: {
         id: input.id,
       },
-    });
-  });
+    })
+  })

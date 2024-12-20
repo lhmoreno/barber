@@ -1,9 +1,9 @@
-import { TRPCError } from "@trpc/server";
-import { z } from "zod";
+import { TRPCError } from '@trpc/server'
+import { z } from 'zod'
 
-import { publicProcedure } from "@/lib/trpc/root";
+import { publicProcedure } from '@/lib/trpc/root'
 
-import { convertSchedulingStatus } from "../helpers/convert-scheduling-status";
+import { convertSchedulingStatus } from '../helpers/convert-scheduling-status'
 
 export const getPublicScheduling = publicProcedure
   .input(z.object({ id: z.string().cuid() }))
@@ -15,13 +15,13 @@ export const getPublicScheduling = publicProcedure
       include: {
         service: true,
       },
-    });
+    })
 
     if (!prismaScheduling) {
       throw new TRPCError({
-        message: "Scheduling not found.",
-        code: "NOT_FOUND",
-      });
+        message: 'Scheduling not found.',
+        code: 'NOT_FOUND',
+      })
     }
 
     return {
@@ -36,5 +36,5 @@ export const getPublicScheduling = publicProcedure
         name: prismaScheduling.service.name,
         timeInMinutes: prismaScheduling.service.timeInMinutes,
       },
-    };
-  });
+    }
+  })

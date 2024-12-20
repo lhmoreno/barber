@@ -1,9 +1,9 @@
-import { createTRPCRouter } from "@/lib/trpc/root";
+import { createTRPCRouter } from '@/lib/trpc/root'
 
-import { createPublicScheduling } from "./create-public-scheduling";
-import { getPublicScheduling } from "./get-scheduling";
-import { getSchedulings } from "./get-schedulings";
-import { changeSchedulingStatus } from "./change-scheduling-status";
+import { changeSchedulingStatus } from './change-scheduling-status'
+import { createPublicScheduling } from './create-public-scheduling'
+import { getPublicScheduling } from './get-scheduling'
+import { getSchedulings } from './get-schedulings'
 
 export const schedulingRouter = createTRPCRouter({
   getAll: getSchedulings,
@@ -14,4 +14,4 @@ export const schedulingRouter = createTRPCRouter({
 
     create: createPublicScheduling,
   },
-});
+})

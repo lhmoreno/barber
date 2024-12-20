@@ -1,10 +1,10 @@
-import { Metadata } from "next";
+import { Metadata } from 'next'
 
-import { UpdateInfoForm } from "@/features/info/components/update-info-form";
+import { UpdateInfoForm } from '@/features/info/components/update-info-form'
 
 export const metadata: Metadata = {
-  title: "Configurações | Barber",
-};
+  title: 'Configurações | Barber',
+}
 
 export default function Settings() {
   return (
@@ -18,5 +18,5 @@ export default function Settings() {
 
       <UpdateInfoForm />
     </div>
-  );
+  )
 }
